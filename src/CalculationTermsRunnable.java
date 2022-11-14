@@ -9,6 +9,11 @@ import java.util.List;
 public class CalculationTermsRunnable implements Runnable{
     private int i;
     private List<BigDecimal> terms;
+    /**
+     * Construtor parametrizado
+     * @param i Numero do termo a ser calculado
+     * @param terms lista de termos
+     */
     public CalculationTermsRunnable(int i, List<BigDecimal> terms){
         this.i = i;
         this.terms = terms;

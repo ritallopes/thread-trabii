@@ -9,10 +9,12 @@ import java.util.concurrent.Callable;
  */
 public class CalculationTermsCallable implements Callable {
     private int i;
-    private List<BigDecimal> terms;
+    /**
+     * Construtor parametrizado
+     * @param i Numero do termo a ser calculado
+     */
     public CalculationTermsCallable(int i){
         this.i = i;
-        this.terms = terms;
     }
     public BigDecimal calculeFatorial(BigDecimal n){
         if(n.compareTo(new BigDecimal(1)) == 0){
