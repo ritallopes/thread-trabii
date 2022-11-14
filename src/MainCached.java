@@ -29,6 +29,7 @@ public class MainCached {
         ) {
             euler += d;
         }
+        System.out.println(terms.size());
         System.out.println(euler);
     }
 }
