@@ -2,8 +2,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+
 /**
  * Calculo do numero de Euler usando cached thread
  * @see java.util.concurrent.Executors
@@ -20,21 +20,21 @@ public class MainCached {
         }else{
             NUM_TERMS = Integer.parseInt(args[0]);
         }
-        ExecutorService executor = Executors.newCachedThreadPool();
-        List<BigDecimal> terms = Collections.synchronizedList(new ArrayList<BigDecimal>());
+        ExecutorService executor =
+                Executors.newCachedThreadPool();
+        BigDecimal euler = new BigDecimal(1);
         for (int i = 1; i <= NUM_TERMS; i++) {
-            Runnable calc = new CalculationTermsRunnable(i, terms);
-            executor.execute(calc);
+            Callable<BigDecimal> calculator = new CalculationTermsCallable(i);
+            Future<BigDecimal> future = executor.submit(calculator);
+            try {
+                euler = euler.add(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
         int active = Thread.activeCount();
         System.out.println("N Threads: "+ active);
         executor.shutdown();
-
-        BigDecimal euler = new BigDecimal(1);
-        for (BigDecimal d: terms
-        ) {
-            euler = euler.add(d);
-        }
         System.out.println(euler);
     }
 }

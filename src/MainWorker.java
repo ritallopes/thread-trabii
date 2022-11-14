@@ -29,6 +29,9 @@ public class MainWorker {
                 e.printStackTrace();
             }
         }
+        int active = Thread.activeCount();
+        System.out.println("N Threads: "+ active);
+
         executor.shutdown();
         System.out.println(euler);
     }
