@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,20 +19,20 @@ public class MainFixed {
             NUM_TERMS = Integer.parseInt(args[1]);
         }
         ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
-        List<Double> terms = Collections.synchronizedList(new ArrayList<Double>());
+        List<BigDecimal> terms = Collections.synchronizedList(new ArrayList<BigDecimal>());
         for (int i = 1; i <= NUM_TERMS; i++) {
-            Runnable calc = new Calc(i, terms);
+            Runnable calc = new CalculationTerms(i, terms);
             executor.execute(calc);
         }
         int active = Thread.activeCount();
+        System.out.println("Threads ativas: "+ active);
         executor.shutdown();
 
-        double euler = 1;
-        for (Double d: terms
+        BigDecimal euler = new BigDecimal(1);
+        for (BigDecimal d: terms
              ) {
-            euler += d;
+            euler = euler.add(d);
         }
-        System.out.println(terms.size());
         System.out.println(euler);
     }
 }
