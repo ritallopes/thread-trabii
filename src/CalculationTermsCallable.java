@@ -1,11 +1,16 @@
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
-
-public class CalculationTerms implements Runnable{
+import java.util.concurrent.Callable;
+/**
+ * Calculo de numero 1 dividido por fatorial de um número implementando a interface Callable
+ * @see java.util.concurrent.Callable
+ * @author <a href="mailto:rita.lopes.705@ufrn.edu.br">Rita Lopes</a>
+ */
+public class CalculationTermsCallable implements Callable {
     private int i;
     private List<BigDecimal> terms;
-    public CalculationTerms(int i, List<BigDecimal> terms){
+    public CalculationTermsCallable(int i){
         this.i = i;
         this.terms = terms;
     }
@@ -18,9 +23,9 @@ public class CalculationTerms implements Runnable{
     }
 
     @Override
-    public void run(){
+    public BigDecimal call(){
         BigDecimal divisor = calculeFatorial(new BigDecimal(i));
         BigDecimal term = new BigDecimal(1).divide(divisor, MathContext.DECIMAL128);
-        terms.add(term);
+        return term;
     }
 }

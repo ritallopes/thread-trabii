@@ -4,7 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+/**
+ * Calculo do numero de Euler usando cached thread
+ * @see java.util.concurrent.Executors
+ * @author <a href="mailto:rita.lopes.705@ufrn.edu.br">Rita Lopes</a>
+ */
 public class MainCached {
     public static void main(String [] args){
         int NUM_TERMS = 0;
@@ -19,10 +23,11 @@ public class MainCached {
         ExecutorService executor = Executors.newCachedThreadPool();
         List<BigDecimal> terms = Collections.synchronizedList(new ArrayList<BigDecimal>());
         for (int i = 1; i <= NUM_TERMS; i++) {
-            Runnable calc = new CalculationTerms(i, terms);
+            Runnable calc = new CalculationTermsRunnable(i, terms);
             executor.execute(calc);
         }
         int active = Thread.activeCount();
+        System.out.println("N Threads: "+ active);
         executor.shutdown();
 
         BigDecimal euler = new BigDecimal(1);
@@ -30,7 +35,6 @@ public class MainCached {
         ) {
             euler = euler.add(d);
         }
-        System.out.println(terms.size());
         System.out.println(euler);
     }
 }

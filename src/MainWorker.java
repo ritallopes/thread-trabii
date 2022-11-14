@@ -1,10 +1,11 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
+/**
+ * Calculo do numero de Euler usando Work stealing thread pool
+ * @see java.util.concurrent.Executors
+ * @author <a href="mailto:rita.lopes.705@ufrn.edu.br">Rita Lopes</a>
+ */
 public class MainWorker {
     public static void main(String [] args){
         int NUM_TERMS = 0;
@@ -16,21 +17,19 @@ public class MainWorker {
         }else{
             NUM_TERMS = Integer.parseInt(args[0]);
         }
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        List<BigDecimal> terms = Collections.synchronizedList(new ArrayList<BigDecimal>());
-        for (int i = 1; i <= NUM_TERMS; i++) {
-            Runnable calc = new CalculationTerms(i, terms);
-            executor.execute(calc);
-        }
-        int active = Thread.activeCount();
-        System.out.println("Threads ativas: "+ active);
-        executor.shutdown();
-
+        ExecutorService executor =
+                Executors.newSingleThreadExecutor();
         BigDecimal euler = new BigDecimal(1);
-        for (BigDecimal d: terms
-        ) {
-            euler = euler.add(d);
+        for (int i = 1; i <= NUM_TERMS; i++) {
+            Callable<BigDecimal> calculator = new CalculationTermsCallable(i);
+            Future<BigDecimal> future = executor.submit(calculator);
+            try {
+                euler = euler.add(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
+        executor.shutdown();
         System.out.println(euler);
     }
 }
